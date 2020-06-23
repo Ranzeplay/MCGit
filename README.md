@@ -2,6 +2,8 @@
 
 A backup plugin for Minecraft Spigot server
 
+*Build Status:* [![Build status](https://dev.azure.com/ranzeplay/MCGit/_apis/build/status/MCGit-Maven-CI)](https://dev.azure.com/ranzeplay/MCGit/_build/latest?definitionId=-1)
+
 ---
 
 ### Commands:
