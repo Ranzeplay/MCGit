@@ -20,4 +20,8 @@ public class MessageTemplateManager {
 
         return ChatColor.BOLD + new String(divider) + " END " + new String(divider);
     }
+
+    public static String commandExecutedWithErrors() {
+        return ChatColor.RED + "Command executed with error(s)";
+    }
 }

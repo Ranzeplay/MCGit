@@ -10,8 +10,9 @@ public class Constants {
     // Formatting
     public static final SimpleDateFormat DateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 
-    // Git File Configurations
+    // Backup File Configurations
     public static final File CommitsDirectory = new File(Constants.ConfigDirectory + "/Commits");
+    public static final File CollectionsDirectory = new File(Constants.ConfigDirectory + "/Collections");
 
     /**
      * Just used to tell players if it is going to rollback server save st the next server startup

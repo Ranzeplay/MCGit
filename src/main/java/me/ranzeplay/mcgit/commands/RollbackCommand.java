@@ -3,7 +3,7 @@ package me.ranzeplay.mcgit.commands;
 import me.ranzeplay.mcgit.Constants;
 import me.ranzeplay.mcgit.Main;
 import me.ranzeplay.mcgit.managers.BackupsManager;
-import me.ranzeplay.mcgit.managers.GitManager;
+import me.ranzeplay.mcgit.managers.CommitManager;
 import me.ranzeplay.mcgit.managers.MessageTemplateManager;
 import me.ranzeplay.mcgit.models.Commit;
 import net.md_5.bungee.api.ChatColor;
@@ -51,7 +51,7 @@ public class RollbackCommand {
             return;
         }
 
-        Commit commit = GitManager.getCommit(commitId);
+        Commit commit = CommitManager.getCommit(commitId);
         if (commit == null) {
             sender.sendMessage(ChatColor.RED + "Cannot read Commit file normally, it might be damaged");
             sender.sendMessage(ChatColor.RED + "Operation failed...");

@@ -56,6 +56,7 @@ public final class Main extends JavaPlugin {
 
         if (!Constants.BackupsDirectory.exists()) Constants.BackupsDirectory.mkdirs();
         if (!Constants.CommitsDirectory.exists()) Constants.CommitsDirectory.mkdirs();
+        if (!Constants.CollectionsDirectory.exists()) Constants.CollectionsDirectory.mkdirs();
 
         ConfigManager.CreateConfigurations();
     }

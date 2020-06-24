@@ -1,7 +1,6 @@
 package me.ranzeplay.mcgit.models;
 
 import me.ranzeplay.mcgit.Constants;
-import me.ranzeplay.mcgit.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -63,7 +62,9 @@ public class Commit {
     }
 
 
-    public YamlConfiguration saveToBukkitYmlFile(YamlConfiguration yamlc) {
+    public YamlConfiguration saveToBukkitYmlFile() {
+        YamlConfiguration yamlc = new YamlConfiguration();
+
         yamlc.set("id", this.getCommitId().toString());
         yamlc.set("description", this.getDescription());
         yamlc.set("time", Constants.DateFormat.format(new Date()));

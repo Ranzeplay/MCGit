@@ -43,7 +43,7 @@ public class DeleteCommand {
         CompletableFuture.runAsync(() -> {
             ZipManager.deleteDirectory(Main.Instance.getDataFolder().getAbsolutePath() + "/Backups/" + commitId.replace("-", ""));
             new File(Constants.ConfigDirectory + "/Commits/" + commitId + ".yml").delete();
-        }).whenComplete((t, u) -> {
+        }).whenComplete((Void t, Throwable u) -> {
             long operationFinishTime = System.nanoTime();
             sender.sendMessage(ChatColor.AQUA + "Operation completed in " + String.format("%.4f", (double) (operationFinishTime - operationStartTime) / 1000 / 1000 / 1000) + " second(s)");
         });

@@ -1,7 +1,7 @@
 package me.ranzeplay.mcgit.gui;
 
 import me.ranzeplay.mcgit.commands.ViewCommand;
-import me.ranzeplay.mcgit.managers.GitManager;
+import me.ranzeplay.mcgit.managers.CommitManager;
 import me.ranzeplay.mcgit.models.Commit;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -23,7 +23,7 @@ public class CommitsPanel implements InventoryHolder, Listener {
     public Inventory getInventory() {
         ArrayList<Commit> commitsList = null;
         try {
-            commitsList = GitManager.getAllCommits();
+            commitsList = CommitManager.getAllCommits();
         } catch (ParseException e) {
             e.printStackTrace();
         }

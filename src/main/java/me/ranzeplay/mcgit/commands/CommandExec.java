@@ -1,6 +1,7 @@
 package me.ranzeplay.mcgit.commands;
 
 import me.ranzeplay.mcgit.gui.CommitsPanel;
+import me.ranzeplay.mcgit.managers.MessageTemplateManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -21,15 +22,22 @@ public class CommandExec implements CommandExecutor {
                                 try {
                                     CommitCommand.Do(args, commandSender);
                                 } catch (Exception e) {
-                                    commandSender.sendMessage(ChatColor.RED + "Command executed with error(s)");
+                                    commandSender.sendMessage(MessageTemplateManager.commandExecutedWithErrors());
                                     e.printStackTrace();
                                 }
                                 break;
+                            case "collection":
+                                try {
+                                    CollectionCommand.Do(args, commandSender);
+                                } catch (Exception e) {
+                                    commandSender.sendMessage(MessageTemplateManager.commandExecutedWithErrors());
+                                    e.printStackTrace();
+                                }
                             case "view":
                                 try {
                                     ViewCommand.Do(args, commandSender);
                                 } catch (ParseException e) {
-                                    commandSender.sendMessage(ChatColor.RED + "Command executed with error(s)");
+                                    commandSender.sendMessage(MessageTemplateManager.commandExecutedWithErrors());
                                     e.printStackTrace();
                                 }
                                 break;
@@ -37,7 +45,7 @@ public class CommandExec implements CommandExecutor {
                                 try {
                                     RollbackCommand.Do(args, commandSender);
                                 } catch (Exception e) {
-                                    commandSender.sendMessage(ChatColor.RED + "Command executed with error(s)");
+                                    commandSender.sendMessage(MessageTemplateManager.commandExecutedWithErrors());
                                     e.printStackTrace();
                                 }
                                 break;
@@ -45,6 +53,7 @@ public class CommandExec implements CommandExecutor {
                                 try {
                                     DeleteCommand.Do(args, commandSender);
                                 } catch (ParseException e) {
+                                    commandSender.sendMessage(MessageTemplateManager.commandExecutedWithErrors());
                                     e.printStackTrace();
                                 }
                                 break;
