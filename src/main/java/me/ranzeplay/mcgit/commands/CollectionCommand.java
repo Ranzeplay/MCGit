@@ -15,10 +15,10 @@ public class CollectionCommand {
                 case "create":
                     create(args, sender);
                     break;
-                case "addCommit":
+                case "addcommit":
                     addCommit(args, sender);
                     break;
-                case "removeCommit":
+                case "removecommit":
                     removeCommit(args, sender);
                     break;
                 case "delete":
@@ -61,6 +61,7 @@ public class CollectionCommand {
         }
     }
 
+    // Usage: /mcgit collection addCommit <collectionId> <commitId>
     private static void addCommit(String[] args, CommandSender sender) throws Exception {
         if (args.length > 3) {
             CommitsCollection collection = CollectionManager.getSingal(args[2]);
@@ -71,6 +72,7 @@ public class CollectionCommand {
         }
     }
 
+    // Usage: /mcgit collection removeCommit <collectionId> <commitId>
     private static void removeCommit(String[] args, CommandSender sender) throws Exception {
         if (args.length > 3) {
             CommitsCollection collection = CollectionManager.getSingal(args[2]);

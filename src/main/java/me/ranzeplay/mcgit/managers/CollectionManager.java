@@ -74,7 +74,7 @@ public class CollectionManager {
         Commit commit = CommitManager.getCommit(commitId);
         if (collection != null && commit != null) {
             ArrayList<Commit> commitArrayList = collection.getCommitsIncluded();
-            commitArrayList.remove(collection.getCommitsIncluded().indexOf(commit));
+            commitArrayList.removeIf(c -> c.getCommitId().equals(commit.getCommitId()));
             collection.setCommitsIncluded(commitArrayList);
             YamlConfiguration yamlc = collection.saveToBukkitYmlFile();
 
