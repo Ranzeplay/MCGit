@@ -2,7 +2,7 @@ package me.ranzeplay.mcgit;
 
 import me.ranzeplay.mcgit.commands.CommandCompleter;
 import me.ranzeplay.mcgit.commands.CommandExec;
-import me.ranzeplay.mcgit.gui.CommitsPanel;
+import me.ranzeplay.mcgit.gui.ArchivesPanel;
 import me.ranzeplay.mcgit.managers.BackupsManager;
 import me.ranzeplay.mcgit.managers.config.ConfigManager;
 import org.bukkit.Bukkit;
@@ -29,14 +29,14 @@ public final class Main extends JavaPlugin {
         Objects.requireNonNull(Bukkit.getPluginCommand("mcgit")).setExecutor(new CommandExec());
         Objects.requireNonNull(Bukkit.getPluginCommand("mcgit")).setTabCompleter(new CommandCompleter());
 
-        Bukkit.getPluginManager().registerEvents(new CommitsPanel(), this);
+        Bukkit.getPluginManager().registerEvents(new ArchivesPanel(), this);
 
         // Do rollback operation if there's already scheduled a rollback
-        String rollbackCommitId = getConfig().getString("nextRollback");
-        if (!Objects.requireNonNull(rollbackCommitId).equalsIgnoreCase("unset")) {
-            getServer().getLogger().log(Level.INFO, "Pending rollback found, executing... (" + rollbackCommitId + ")");
+        String rollbackArchiveId = getConfig().getString("nextRollback");
+        if (!Objects.requireNonNull(rollbackArchiveId).equalsIgnoreCase("unset")) {
+            getServer().getLogger().log(Level.INFO, "Pending rollback found, executing... (" + rollbackArchiveId + ")");
             try {
-                BackupsManager.Execute(rollbackCommitId);
+                BackupsManager.Rollback(rollbackArchiveId);
                 getConfig().set("nextRollback", "unset");
                 saveConfig();
             } catch (Exception e) {
@@ -54,10 +54,10 @@ public final class Main extends JavaPlugin {
     private void initialPluginFiles() throws IOException {
         saveDefaultConfig();
 
-        if (!Constants.BackupsDirectory.exists()) Constants.BackupsDirectory.mkdirs();
-        if (!Constants.CommitsDirectory.exists()) Constants.CommitsDirectory.mkdirs();
-        if (!Constants.CollectionsDirectory.exists()) Constants.CollectionsDirectory.mkdirs();
+        if (!Constants.ArchivesDirectory.exists()) Constants.ArchivesDirectory.mkdirs();
+        if (!Constants.ArchivesProfileDirectory.exists()) Constants.ArchivesProfileDirectory.mkdirs();
+        if (!Constants.CollectionsProfileDirectory.exists()) Constants.CollectionsProfileDirectory.mkdirs();
 
-        ConfigManager.CreateConfigurations();
+        ConfigManager.CreateProfile();
     }
 }

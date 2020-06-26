@@ -1,9 +1,9 @@
 package me.ranzeplay.mcgit.commands;
 
+import me.ranzeplay.mcgit.managers.ArchiveManager;
 import me.ranzeplay.mcgit.managers.CollectionManager;
-import me.ranzeplay.mcgit.managers.CommitManager;
-import me.ranzeplay.mcgit.models.Commit;
-import me.ranzeplay.mcgit.models.CommitsCollection;
+import me.ranzeplay.mcgit.models.Archive;
+import me.ranzeplay.mcgit.models.ArchivesCollection;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -32,19 +32,19 @@ public class CommandCompleter implements TabCompleter {
                 if (command.getName().equalsIgnoreCase("mcgit") || command.getAliases().contains(label)) {
                     if (s.size() == 0) {
                         availableChoices.add("gui");
-                        availableChoices.add("commit");
+                        availableChoices.add("archive");
                         availableChoices.add("collection");
                         availableChoices.add("view");
                         availableChoices.add("rollback");
                         availableChoices.add("delete");
                     } else if (s.size() == 1) {
                         if (s.get(0).equalsIgnoreCase("view")) {
-                            availableChoices.add("commits");
-                            availableChoices.add("commit");
+                            availableChoices.add("archives");
+                            availableChoices.add("archive");
                             availableChoices.add("collections");
                             availableChoices.add("collection");
                         } else if (s.get(0).equalsIgnoreCase("rollback") || s.get(0).equalsIgnoreCase("delete")) {
-                            availableChoices = getAllCommitsId();
+                            availableChoices = getAllArchivesId();
 
                             if (s.get(0).equalsIgnoreCase("rollback")) {
                                 availableChoices.add("abort");
@@ -52,34 +52,34 @@ public class CommandCompleter implements TabCompleter {
                         } else if (s.get(0).equalsIgnoreCase("collection")) {
                             availableChoices.add("create");
                             availableChoices.add("delete");
-                            availableChoices.add("addCommit");
-                            availableChoices.add("removeCommit");
+                            availableChoices.add("addArchive");
+                            availableChoices.add("removeArchive");
                         }
                     } else if (s.size() == 2) {
                         if (s.get(0).equalsIgnoreCase("view")) {
-                            if (s.get(1).equalsIgnoreCase("commit")) {
-                                availableChoices = getAllCommitsId();
+                            if (s.get(1).equalsIgnoreCase("archive")) {
+                                availableChoices = getAllArchivesId();
                             }
                             if (s.get(1).equalsIgnoreCase("collection")) {
                                 availableChoices = getAllCollectionsId();
                             }
                         } else if (s.get(0).equalsIgnoreCase("collection")) {
-                            if (s.get(1).equalsIgnoreCase("addCommit") || s.get(1).equalsIgnoreCase("removeCommit") || s.get(1).equalsIgnoreCase("delete")) {
+                            if (s.get(1).equalsIgnoreCase("addArchive") || s.get(1).equalsIgnoreCase("removeArchiveArchive") || s.get(1).equalsIgnoreCase("delete")) {
                                 availableChoices = getAllCollectionsId();
                             }
                         }
                     } else if (s.size() == 3) {
-                        if (s.get(0).equalsIgnoreCase("commit")) {
+                        if (s.get(0).equalsIgnoreCase("archive")) {
                             availableChoices = getAllWorldsName();
                         } else if (s.get(0).equalsIgnoreCase("collection")) {
-                            if ((s.get(1).equalsIgnoreCase("addCommit"))) {
-                                availableChoices = getAllCommitsId();
-                            } else if ((s.get(1).equalsIgnoreCase("removeCommit"))) {
+                            if ((s.get(1).equalsIgnoreCase("addArchive"))) {
+                                availableChoices = getAllArchivesId();
+                            } else if ((s.get(1).equalsIgnoreCase("removeArchive"))) {
                                 try {
-                                    CommitsCollection collection = CollectionManager.getSingal(s.get(2));
+                                    ArchivesCollection collection = CollectionManager.getSingal(s.get(2));
                                     ArrayList<String> finalAvailableChoices = availableChoices;
-                                    collection.getCommitsIncluded().stream().forEach(c -> {
-                                        finalAvailableChoices.add(c.getCommitId().toString());
+                                    collection.getArchivessIncluded().stream().forEach(c -> {
+                                        finalAvailableChoices.add(c.getArchiveId().toString());
                                     });
                                     availableChoices = finalAvailableChoices;
                                 } catch (ParseException e) {
@@ -96,12 +96,12 @@ public class CommandCompleter implements TabCompleter {
         return availableChoices;
     }
 
-    private ArrayList<String> getAllCommitsId() {
+    private ArrayList<String> getAllArchivesId() {
         ArrayList<String> availableChoices = new ArrayList<>();
         try {
-            ArrayList<Commit> commits = CommitManager.getAllCommits();
-            for (Commit commit : commits) {
-                availableChoices.add(commit.getCommitId().toString());
+            ArrayList<Archive> archives = ArchiveManager.getAllArchives();
+            for (Archive archive : archives) {
+                availableChoices.add(archive.getArchiveId().toString());
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -113,8 +113,8 @@ public class CommandCompleter implements TabCompleter {
     private ArrayList<String> getAllCollectionsId() {
         ArrayList<String> availableChoices = new ArrayList<>();
         try {
-            ArrayList<CommitsCollection> collections = CollectionManager.getAll();
-            for (CommitsCollection collection : collections) {
+            ArrayList<ArchivesCollection> collections = CollectionManager.getAll();
+            for (ArchivesCollection collection : collections) {
                 availableChoices.add(collection.getCollectionId().toString());
             }
         } catch (ParseException e) {

@@ -1,10 +1,10 @@
 package me.ranzeplay.mcgit.commands;
 
 import me.ranzeplay.mcgit.Main;
-import me.ranzeplay.mcgit.managers.CommitManager;
+import me.ranzeplay.mcgit.managers.ArchiveManager;
 import me.ranzeplay.mcgit.managers.MessageTemplateManager;
 import me.ranzeplay.mcgit.managers.zip.ZipManager;
-import me.ranzeplay.mcgit.models.Commit;
+import me.ranzeplay.mcgit.models.Archive;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-public class CommitCommand {
+public class ArchiveCommand {
     public static void Do(String[] args, CommandSender sender) throws Exception {
         Player execPlayer = (Player) sender;
 
@@ -27,13 +27,13 @@ public class CommitCommand {
                 targetWorld = Main.Instance.getServer().getWorld(args[2].replaceAll("_nether", "").replaceAll("_the_end", ""));
                 break;
             default:
-                HelpCommand.Commit(sender);
+                HelpCommand.Archive(sender);
                 return;
         }
 
         long operationStartTime = System.nanoTime();
 
-        Commit commit = CommitManager.makeCommit(args[1], execPlayer, targetWorld);
+        Archive archive = ArchiveManager.makeArhive(args[1], execPlayer, targetWorld);
         if (targetWorld == null) {
             sender.sendMessage(ChatColor.RED + "Base world (overworld) not found");
             return;
@@ -48,7 +48,7 @@ public class CommitCommand {
             if (Main.Instance.getConfig().getBoolean("compressNetherWorldByDefault")) {
                 World netherWorld = Bukkit.getWorld(targetWorld.getName() + "_nether");
                 try {
-                    ZipManager.zipWorld(Objects.requireNonNull(netherWorld).getName(), commit.getCommitId().toString().replace("-", ""));
+                    ZipManager.zipWorld(Objects.requireNonNull(netherWorld).getName(), archive.getArchiveId().toString().replace("-", ""));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -56,14 +56,14 @@ public class CommitCommand {
             if (Main.Instance.getConfig().getBoolean("compressTheEndWorldByDefault")) {
                 World theEndWorld = Bukkit.getWorld(targetWorld.getName() + "_the_end");
                 try {
-                    ZipManager.zipWorld(Objects.requireNonNull(theEndWorld).getName(), commit.getCommitId().toString().replace("-", ""));
+                    ZipManager.zipWorld(Objects.requireNonNull(theEndWorld).getName(), archive.getArchiveId().toString().replace("-", ""));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
 
             try {
-                ZipManager.zipWorld(targetWorld.getName(), commit.getCommitId().toString().replace("-", ""));
+                ZipManager.zipWorld(targetWorld.getName(), archive.getArchiveId().toString().replace("-", ""));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -71,10 +71,11 @@ public class CommitCommand {
             long operationCompleteTime = System.nanoTime();
 
             sender.sendMessage("");
-            sender.sendMessage(MessageTemplateManager.title(10, "Commit Created"));
+            sender.sendMessage(MessageTemplateManager.title(10, "Archive Created"));
 
-            sender.sendMessage(ChatColor.GREEN + "Commit " + ChatColor.YELLOW + commit.getCommitId().toString() + ChatColor.GREEN + " created successfully!");
-            sender.sendMessage(ChatColor.GREEN + "Size: " + ChatColor.YELLOW + String.format("%.4f", CommitManager.GetCommitTotalSize(commit.getCommitId().toString()) / 1024 / 1024) + "MB");
+            sender.sendMessage(ChatColor.GREEN + "Archive " + ChatColor.YELLOW + archive.getArchiveId().toString() + ChatColor.GREEN + " created successfully!");
+            sender.sendMessage(ChatColor.GREEN + "Description: " + archive.getDescription());
+            sender.sendMessage(ChatColor.GREEN + "Size: " + ChatColor.YELLOW + String.format("%.4f", ArchiveManager.GetArchiveTotalSize(archive.getArchiveId().toString()) / 1024 / 1024) + "MB");
             sender.sendMessage(ChatColor.GREEN + "Time elapsed: " + ChatColor.YELLOW + String.format("%.4f", (double) (operationCompleteTime - operationStartTime) / 1000 / 1000 / 1000) + " seconds");
 
             sender.sendMessage(MessageTemplateManager.ending(15));

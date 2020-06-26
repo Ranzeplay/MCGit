@@ -2,10 +2,10 @@ package me.ranzeplay.mcgit.commands;
 
 import me.ranzeplay.mcgit.Constants;
 import me.ranzeplay.mcgit.Main;
+import me.ranzeplay.mcgit.managers.ArchiveManager;
 import me.ranzeplay.mcgit.managers.BackupsManager;
-import me.ranzeplay.mcgit.managers.CommitManager;
 import me.ranzeplay.mcgit.managers.MessageTemplateManager;
-import me.ranzeplay.mcgit.models.Commit;
+import me.ranzeplay.mcgit.models.Archive;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -32,28 +32,28 @@ public class RollbackCommand {
         }
     }
 
-    private static void RequestConfirm(CommandSender sender, String commitId) throws ParseException {
+    private static void RequestConfirm(CommandSender sender, String archiveId) throws ParseException {
         sender.sendMessage("");
         sender.sendMessage(MessageTemplateManager.title(10, "Request Confirm"));
 
         sender.sendMessage(ChatColor.AQUA + "You are requesting to rollback the server, you need to confirm your action!");
-        ViewCommand.ViewCommit(sender, commitId);
-        sender.sendMessage(ChatColor.AQUA + "Use \"/mcgit rollback " + commitId + " confirm\" to confirm rollback operation...");
+        ViewCommand.ViewArchive(sender, archiveId);
+        sender.sendMessage(ChatColor.AQUA + "Use \"/mcgit rollback " + archiveId + " confirm\" to confirm rollback operation...");
 
         sender.sendMessage(MessageTemplateManager.ending(15));
         sender.sendMessage("");
     }
 
-    private static void Process(CommandSender sender, String commitId) throws Exception {
-        File commitFile = new File(Constants.CommitsDirectory + "/" + commitId + ".yml");
-        if (!commitFile.exists()) {
-            sender.sendMessage(ChatColor.AQUA + "Commit Not Found");
+    private static void Process(CommandSender sender, String archiveId) throws Exception {
+        File archiveFile = new File(Constants.ArchivesProfileDirectory + "/" + archiveId + ".yml");
+        if (!archiveFile.exists()) {
+            sender.sendMessage(ChatColor.AQUA + "Archive Not Found");
             return;
         }
 
-        Commit commit = CommitManager.getCommit(commitId);
-        if (commit == null) {
-            sender.sendMessage(ChatColor.RED + "Cannot read Commit file normally, it might be damaged");
+        Archive archive = ArchiveManager.getArchive(archiveId);
+        if (archive == null) {
+            sender.sendMessage(ChatColor.RED + "Cannot read Archive file normally, it might be damaged");
             sender.sendMessage(ChatColor.RED + "Operation failed...");
             return;
         }
@@ -64,8 +64,8 @@ public class RollbackCommand {
             targetPlayer.sendMessage(MessageTemplateManager.title(7, "Rollback Operation Summary"));
 
             TextComponent text = new TextComponent();
-            text.setText(ChatColor.YELLOW + "Target CommitId: " + ChatColor.GREEN + commitId);
-            text.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mcgit view commit " + commitId));
+            text.setText(ChatColor.YELLOW + "Target archiveId: " + ChatColor.GREEN + archiveId);
+            text.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mcgit view archive " + archiveId));
             targetPlayer.spigot().sendMessage(text);
 
             targetPlayer.sendMessage(ChatColor.YELLOW + "Triggered by: " + ChatColor.GREEN + sender.getName());
@@ -80,7 +80,7 @@ public class RollbackCommand {
             targetPlayer.sendMessage("");
         }
 
-        BackupsManager.Schedule(commitId);
+        BackupsManager.Schedule(archiveId);
     }
 
     private static void Abort(CommandSender sender) {

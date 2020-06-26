@@ -3,34 +3,34 @@ package me.ranzeplay.mcgit.managers;
 import me.ranzeplay.mcgit.Constants;
 import me.ranzeplay.mcgit.Main;
 import me.ranzeplay.mcgit.managers.zip.ZipManager;
-import me.ranzeplay.mcgit.models.Commit;
+import me.ranzeplay.mcgit.models.Archive;
 
 import java.io.File;
 
 public class BackupsManager {
     /**
-     * Will not check if the commitId is valid
+     * Will not check if the archiveId is valid
      *
-     * @param commitId Must be valid
+     * @param archiveId Must be valid
      * @throws Exception When unzip operation fail
      */
-    public static void Execute(String commitId) throws Exception {
-        Commit commit = new Commit(null, null, null).getFromBukkitYmlFile(new File(Constants.ConfigDirectory + "/Commits/" + commitId +".yml"));
+    public static void Rollback(String archiveId) throws Exception {
+        Archive archive = new Archive(null, null, null).getFromBukkitYmlFile(new File(Constants.ArchivesProfileDirectory + archiveId + ".yml"));
         if (Main.Instance.getConfig().getBoolean("compressNetherWorldByDefault")) {
-            ZipManager.replaceWorldFromBackup(commit.getWorldName().replaceAll("_nether", "").replaceAll("_the_end", "") + "_nether",
-                    commit.getCommitId().toString().replace("-", ""));
+            ZipManager.replaceWorldFromBackup(archive.getWorldName().replaceAll("_nether", "").replaceAll("_the_end", "") + "_nether",
+                    archive.getArchiveId().toString().replace("-", ""));
         }
         if (Main.Instance.getConfig().getBoolean("compressTheEndWorldByDefault")) {
-            ZipManager.replaceWorldFromBackup(commit.getWorldName().replaceAll("_nether", "").replaceAll("_the_end", "") + "_the_end",
-                    commit.getCommitId().toString().replace("-", ""));
+            ZipManager.replaceWorldFromBackup(archive.getWorldName().replaceAll("_nether", "").replaceAll("_the_end", "") + "_the_end",
+                    archive.getArchiveId().toString().replace("-", ""));
         }
 
-        ZipManager.replaceWorldFromBackup(commit.getWorldName().replaceAll("_nether", "").replaceAll("_the_end", ""), commitId.replace("-", ""));
+        ZipManager.replaceWorldFromBackup(archive.getWorldName().replaceAll("_nether", "").replaceAll("_the_end", ""), archiveId.replace("-", ""));
     }
 
-    public static void Schedule(String commitId) {
-        Main.Instance.getConfig().set("nextRollback", commitId);
-        Constants.IsScheduled = true;
+    public static void Schedule(String archiveId) {
+        Main.Instance.getConfig().set("nextRollback", archiveId);
+        Constants.IsRollbackScheduled = true;
         Main.Instance.saveConfig();
     }
 
@@ -40,11 +40,11 @@ public class BackupsManager {
      * @return Has been cancelled or not scheduled
      */
     public static boolean Abort() {
-        if (Constants.IsScheduled) {
+        if (Constants.IsRollbackScheduled) {
             Main.Instance.getConfig().set("nextRollback", "unset");
             Main.Instance.saveConfig();
 
-            Constants.IsScheduled = false;
+            Constants.IsRollbackScheduled = false;
             return true;
         }
 

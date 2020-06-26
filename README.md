@@ -10,25 +10,25 @@ A backup plugin for Minecraft Spigot server
 
 - **Commit**
 
-    - **/mcgit commit <description>** to make a new commit and pack as a zip file to backup directory
+    - **/mcgit archive <description>** to make a new archive and pack current game save into a zip file to backup directory
 
-    - **/mcgit view <commits|commit [commit id]|collections|collection [collection id]>** to view details of collection(s) or commit(s)
+    - **/mcgit view <archives|archive [archive id]|collections|collection [collection id]>** to view details of collection(s) or archive(s)
 
-    - **/mcgit rollback <commit id>** to rollback server save to a specific version of your server save, changes will be applied on the next server startup
+    - **/mcgit rollback <archive id>** to rollback server save to a specific version of your server save, changes will be applied on the next server startup
 
-    - **/mcgit delete <commit id>** to delete a specific commit forever
+    - **/mcgit delete <archive id>** to delete a specific archive forever
 
 - **Collection**
 
-    - **/mcgit collection add <collectionName> <collectionDescription>** to create a commits collection to collate commits
+    - **/mcgit collection add <collectionName> <collectionDescription>** to create a archives collection to collate archives
 
     - **/mcgit collection delete <collectionId>** to delete a collection
 
-    - **/mcgit collection addCommit <collectionId> <commitId>** to add a commit into a collection
+    - **/mcgit collection addCommit <collectionId> <commitId>** to add a archive into a collection
 
-    - **/mcgit collection removeCommit <collectionId> <commitId>** to remove a commit from a collection
+    - **/mcgit collection removeCommit <collectionId> <commitId>** to remove a archive from a collection
 
-- **/mcgit gui** to open a GUI contains all your up to 54 commits
+- **/mcgit gui** to open a GUI contains all your up to 54 archives
 
 - **/mcgit help** to view command help
 

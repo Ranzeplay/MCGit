@@ -1,8 +1,8 @@
 package me.ranzeplay.mcgit.managers;
 
 import me.ranzeplay.mcgit.Constants;
-import me.ranzeplay.mcgit.models.Commit;
-import me.ranzeplay.mcgit.models.CommitsCollection;
+import me.ranzeplay.mcgit.models.Archive;
+import me.ranzeplay.mcgit.models.ArchivesCollection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class CollectionManager {
-    public static CommitsCollection create(String collectionName, String collectionDescription) throws IOException {
-        CommitsCollection collection = new CommitsCollection(collectionName, collectionDescription);
+    public static ArchivesCollection create(String collectionName, String collectionDescription) throws IOException {
+        ArchivesCollection collection = new ArchivesCollection(collectionName, collectionDescription);
 
-        File newCollection = new File(Constants.CollectionsDirectory + "/" + collection.getCollectionId().toString() + ".yml");
+        File newCollection = new File(Constants.CollectionsProfileDirectory + "/" + collection.getCollectionId().toString() + ".yml");
         newCollection.createNewFile();
 
         YamlConfiguration yamlc = collection.saveToBukkitYmlFile();
@@ -25,61 +25,61 @@ public class CollectionManager {
     }
 
     public static void delete(String collectionId) throws Exception {
-        CommitsCollection collection = getSingal(collectionId);
+        ArchivesCollection collection = getSingal(collectionId);
         if (collection != null) {
-            File collectionFile = new File(Constants.CollectionsDirectory + "/" + collection.getCollectionId().toString() + ".yml");
+            File collectionFile = new File(Constants.CollectionsProfileDirectory + "/" + collection.getCollectionId().toString() + ".yml");
             collectionFile.delete();
         }
     }
 
-    public static ArrayList<CommitsCollection> getAll() throws ParseException {
-        ArrayList<CommitsCollection> list = new ArrayList<>();
-        File files = Constants.CollectionsDirectory;
+    public static ArrayList<ArchivesCollection> getAll() throws ParseException {
+        ArrayList<ArchivesCollection> list = new ArrayList<>();
+        File files = Constants.CollectionsProfileDirectory;
         if (Objects.requireNonNull(files.listFiles()).length == 0) return list;
-        for (File file : Objects.requireNonNull(Constants.CollectionsDirectory.listFiles())) {
-            list.add(new CommitsCollection(null, null).getFromBukkitYmlFile(file));
+        for (File file : Objects.requireNonNull(Constants.CollectionsProfileDirectory.listFiles())) {
+            list.add(new ArchivesCollection(null, null).getFromBukkitYmlFile(file));
         }
 
         return list;
     }
 
-    public static CommitsCollection getSingal(String collectionId) throws ParseException {
-        File collectionFile = new File(Constants.CollectionsDirectory + "/" + collectionId + ".yml");
+    public static ArchivesCollection getSingal(String collectionId) throws ParseException {
+        File collectionFile = new File(Constants.CollectionsProfileDirectory + "/" + collectionId + ".yml");
         if (!collectionFile.exists()) {
             return null;
         }
 
-        return new CommitsCollection(null, null).getFromBukkitYmlFile(collectionFile);
+        return new ArchivesCollection(null, null).getFromBukkitYmlFile(collectionFile);
     }
 
-    public static void addCommitToCollection(String collectionId, String commitId) throws Exception {
-        CommitsCollection collection = getSingal(collectionId);
-        Commit commit = CommitManager.getCommit(commitId);
-        if (collection != null && commit != null) {
-            ArrayList<Commit> commitArrayList = collection.getCommitsIncluded();
-            commitArrayList.add(commit);
-            collection.setCommitsIncluded(commitArrayList);
+    public static void addArchiveToCollection(String collectionId, String archiveId) throws Exception {
+        ArchivesCollection collection = getSingal(collectionId);
+        Archive archive = ArchiveManager.getArchive(archiveId);
+        if (collection != null && archive != null) {
+            ArrayList<Archive> archiveArrayList = collection.getArchivessIncluded();
+            archiveArrayList.add(archive);
+            collection.setArchivesIncluded(archiveArrayList);
             YamlConfiguration yamlc = collection.saveToBukkitYmlFile();
 
             // Overwrite file (delete and recreate)
-            File collectionFile = new File(Constants.CollectionsDirectory + "/" + collection.getCollectionId().toString() + ".yml");
+            File collectionFile = new File(Constants.CollectionsProfileDirectory + "/" + collection.getCollectionId().toString() + ".yml");
             collectionFile.delete();
             collectionFile.createNewFile();
             yamlc.save(collectionFile);
         }
     }
 
-    public static void removeFromCollection(String collectionId, String commitId) throws Exception {
-        CommitsCollection collection = getSingal(collectionId);
-        Commit commit = CommitManager.getCommit(commitId);
-        if (collection != null && commit != null) {
-            ArrayList<Commit> commitArrayList = collection.getCommitsIncluded();
-            commitArrayList.removeIf(c -> c.getCommitId().equals(commit.getCommitId()));
-            collection.setCommitsIncluded(commitArrayList);
+    public static void removeFromCollection(String collectionId, String archiveId) throws Exception {
+        ArchivesCollection collection = getSingal(collectionId);
+        Archive archive = ArchiveManager.getArchive(archiveId);
+        if (collection != null && archive != null) {
+            ArrayList<Archive> archiveArrayList = collection.getArchivessIncluded();
+            archiveArrayList.removeIf(c -> c.getArchiveId().equals(archive.getArchiveId()));
+            collection.setArchivesIncluded(archiveArrayList);
             YamlConfiguration yamlc = collection.saveToBukkitYmlFile();
 
             // Overwrite file (delete and recreate)
-            File collectionFile = new File(Constants.CollectionsDirectory + "/" + collection.getCollectionId().toString() + ".yml");
+            File collectionFile = new File(Constants.CollectionsProfileDirectory + "/" + collection.getCollectionId().toString() + ".yml");
             collectionFile.delete();
             collectionFile.createNewFile();
             yamlc.save(collectionFile);

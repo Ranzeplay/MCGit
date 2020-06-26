@@ -1,11 +1,11 @@
 package me.ranzeplay.mcgit.commands;
 
 import me.ranzeplay.mcgit.Constants;
+import me.ranzeplay.mcgit.managers.ArchiveManager;
 import me.ranzeplay.mcgit.managers.CollectionManager;
-import me.ranzeplay.mcgit.managers.CommitManager;
 import me.ranzeplay.mcgit.managers.MessageTemplateManager;
-import me.ranzeplay.mcgit.models.Commit;
-import me.ranzeplay.mcgit.models.CommitsCollection;
+import me.ranzeplay.mcgit.models.Archive;
+import me.ranzeplay.mcgit.models.ArchivesCollection;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -22,14 +22,14 @@ public class ViewCommand {
             switch (args[1].toLowerCase()) {
                 case "tree":
                     break;
-                case "commits":
-                    ViewCommits(sender);
+                case "archives":
+                    ViewArchives(sender);
                     break;
-                case "commit":
+                case "archive":
                     if (args.length > 2) {
-                        ViewCommit(sender, args[2]);
+                        ViewArchive(sender, args[2]);
                     } else {
-                        sender.sendMessage("Usage: /mcgit view commit <commitId>");
+                        sender.sendMessage("Usage: /mcgit view archive <archiveId>");
                     }
                     break;
                 case "collections":
@@ -43,55 +43,55 @@ public class ViewCommand {
                     }
                     break;
                 default:
-                    sender.sendMessage("Usage: /mcgit view <commit|commits>");
+                    sender.sendMessage("Usage: /mcgit view <archive|archives>");
             }
         } else {
             HelpCommand.View(sender);
         }
     }
 
-    public static void ViewCommit(CommandSender sender, String commitId) throws ParseException {
-        File commitFile = new File(Constants.CommitsDirectory + "/" + commitId + ".yml");
-        if (!commitFile.exists()) {
-            sender.sendMessage(ChatColor.AQUA + "Commit Not Found");
+    public static void ViewArchive(CommandSender sender, String archiveId) throws ParseException {
+        File archiveFile = new File(Constants.ArchivesProfileDirectory + "/" + archiveId + ".yml");
+        if (!archiveFile.exists()) {
+            sender.sendMessage(ChatColor.AQUA + "Archive Not Found");
             return;
         }
 
-        Commit commit = new Commit(null, null, null).getFromBukkitYmlFile(commitFile);
+        Archive archive = new Archive(null, null, null).getFromBukkitYmlFile(archiveFile);
 
         sender.sendMessage("");
-        // sender.sendMessage("----------[MCGit : Commit Details]----------");
-        sender.sendMessage(MessageTemplateManager.title(12, "Commit Details"));
-        sender.sendMessage(ChatColor.YELLOW + "Commit Id: " + ChatColor.GREEN + commit.getCommitId());
-        sender.sendMessage(ChatColor.YELLOW + "Description: " + ChatColor.GREEN + commit.getDescription());
-        sender.sendMessage(ChatColor.YELLOW + "Commit Time: " + ChatColor.GREEN + commit.getCreateTime());
-        sender.sendMessage(ChatColor.YELLOW + "World: " + ChatColor.GREEN + commit.getWorld().getName());
-        sender.sendMessage(ChatColor.YELLOW + "Commit Player: " + ChatColor.GREEN + commit.getPlayer().getName() + " (" + commit.getPlayer().getUniqueId() + ")");
-        sender.sendMessage(ChatColor.YELLOW + "Size: " + String.format("%.4f", CommitManager.GetCommitTotalSize(commit.getCommitId().toString()) / 1024 / 1024) + "MB");
+        // sender.sendMessage("----------[MCGit : Archive Details]----------");
+        sender.sendMessage(MessageTemplateManager.title(12, "Archive Details"));
+        sender.sendMessage(ChatColor.YELLOW + "Archive Id: " + ChatColor.GREEN + archive.getArchiveId());
+        sender.sendMessage(ChatColor.YELLOW + "Description: " + ChatColor.GREEN + archive.getDescription());
+        sender.sendMessage(ChatColor.YELLOW + "Create time: " + ChatColor.GREEN + archive.getCreateTime());
+        sender.sendMessage(ChatColor.YELLOW + "World: " + ChatColor.GREEN + archive.getWorld().getName());
+        sender.sendMessage(ChatColor.YELLOW + "Operator: " + ChatColor.GREEN + archive.getPlayer().getName() + " (" + archive.getPlayer().getUniqueId() + ")");
+        sender.sendMessage(ChatColor.YELLOW + "Size: " + String.format("%.4f", ArchiveManager.GetArchiveTotalSize(archive.getArchiveId().toString()) / 1024 / 1024) + "MB");
 
         TextComponent actionsMessage = new TextComponent();
         actionsMessage.setText(ChatColor.RED + "[Rollback]");
-        actionsMessage.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/mcgit rollback " + commit.getCommitId().toString()));
+        actionsMessage.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/mcgit rollback " + archive.getArchiveId().toString()));
         sender.spigot().sendMessage(actionsMessage);
 
         sender.sendMessage(MessageTemplateManager.ending(17));
         sender.sendMessage("");
     }
 
-    private static void ViewCommits(CommandSender sender) throws ParseException {
-        ArrayList<Commit> existingCommits = CommitManager.getAllCommits();
-        existingCommits = reverseArrayList(existingCommits);
+    private static void ViewArchives(CommandSender sender) throws ParseException {
+        ArrayList<Archive> existingArchives = ArchiveManager.getAllArchives();
+        existingArchives = reverseArrayList(existingArchives);
 
         sender.sendMessage("");
-        // sender.sendMessage("---------[MCGit : Existing Commits]---------");
-        sender.sendMessage(MessageTemplateManager.title(10, "Existing Commits"));
-        for (Commit commit : existingCommits) {
+        // sender.sendMessage("---------[MCGit : Existing archives]---------");
+        sender.sendMessage(MessageTemplateManager.title(10, "Existing Archives"));
+        for (Archive archive : existingArchives) {
             TextComponent detailsMessage = new TextComponent();
-            detailsMessage.setText(ChatColor.GREEN + commit.getDescription() + " " + ChatColor.YELLOW + Constants.DateFormat.format(commit.getCreateTime()));
-            detailsMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mcgit view commit " + commit.getCommitId().toString()));
+            detailsMessage.setText(ChatColor.GREEN + archive.getDescription() + " " + ChatColor.YELLOW + Constants.DateFormat.format(archive.getCreateTime()));
+            detailsMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mcgit view archive " + archive.getArchiveId().toString()));
             sender.spigot().sendMessage(detailsMessage);
         }
-        if (existingCommits.size() == 0) {
+        if (existingArchives.size() == 0) {
             sender.sendMessage(ChatColor.AQUA + "Nothing to show");
         }
 
@@ -100,30 +100,30 @@ public class ViewCommand {
     }
 
     public static void ViewCollection(CommandSender sender, String collectionId) throws ParseException {
-        File collectionFile = new File(Constants.CollectionsDirectory + "/" + collectionId + ".yml");
+        File collectionFile = new File(Constants.CollectionsProfileDirectory + "/" + collectionId + ".yml");
         if (!collectionFile.exists()) {
-            sender.sendMessage(ChatColor.AQUA + "CommitsCollection Not Found");
+            sender.sendMessage(ChatColor.AQUA + "Collection Not Found");
             return;
         }
 
-        CommitsCollection collection = new CommitsCollection(null, null).getFromBukkitYmlFile(collectionFile);
+        ArchivesCollection collection = new ArchivesCollection(null, null).getFromBukkitYmlFile(collectionFile);
 
-        sender.sendMessage(MessageTemplateManager.title(11, "CommitsCollection Details"));
-        sender.sendMessage(ChatColor.YELLOW + "CommitsCollection Id: " + ChatColor.GREEN + collection.getCollectionId());
+        sender.sendMessage(MessageTemplateManager.title(11, "ArchivesCollection Details"));
+        sender.sendMessage(ChatColor.YELLOW + "ArchivesCollection Id: " + ChatColor.GREEN + collection.getCollectionId());
         sender.sendMessage(ChatColor.YELLOW + "Name: " + ChatColor.GREEN + collection.getName());
         sender.sendMessage(ChatColor.YELLOW + "Description: " + ChatColor.GREEN + collection.getDescription());
-        sender.sendMessage(ChatColor.YELLOW + "Commits in collection: " + ChatColor.GREEN + collection.getCommitsIncluded().size());
+        sender.sendMessage(ChatColor.YELLOW + "Archives in collection: " + ChatColor.GREEN + collection.getArchivessIncluded().size());
         sender.sendMessage(MessageTemplateManager.ending(23));
     }
 
     private static void ViewCollections(CommandSender sender) throws ParseException {
-        ArrayList<CommitsCollection> existingCollections = CollectionManager.getAll();
+        ArrayList<ArchivesCollection> existingCollections = CollectionManager.getAll();
         existingCollections = reverseArrayList(existingCollections);
 
         sender.sendMessage("");
-        // sender.sendMessage("---------[MCGit : Existing Commits]---------");
+        // sender.sendMessage("---------[MCGit : Existing archives]---------");
         sender.sendMessage(MessageTemplateManager.title(11, "Existing Collections"));
-        for (CommitsCollection collection : existingCollections) {
+        for (ArchivesCollection collection : existingCollections) {
             TextComponent detailsMessage = new TextComponent();
             detailsMessage.setText(ChatColor.GREEN + collection.getName() + " " + ChatColor.YELLOW + collection.getCollectionId().toString());
             detailsMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mcgit view collection " + collection.getCollectionId().toString()));

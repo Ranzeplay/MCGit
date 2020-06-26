@@ -1,6 +1,6 @@
 package me.ranzeplay.mcgit.commands;
 
-import me.ranzeplay.mcgit.gui.CommitsPanel;
+import me.ranzeplay.mcgit.gui.ArchivesPanel;
 import me.ranzeplay.mcgit.managers.MessageTemplateManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -18,9 +18,9 @@ public class CommandExec implements CommandExecutor {
                 if (command.getName().equalsIgnoreCase("mcgit") || command.getAliases().contains(s)) {
                     if (args.length > 0) {
                         switch (args[0].toLowerCase()) {
-                            case "commit":
+                            case "archive":
                                 try {
-                                    CommitCommand.Do(args, commandSender);
+                                    ArchiveCommand.Do(args, commandSender);
                                 } catch (Exception e) {
                                     commandSender.sendMessage(MessageTemplateManager.commandExecutedWithErrors());
                                     e.printStackTrace();
@@ -58,7 +58,7 @@ public class CommandExec implements CommandExecutor {
                                 }
                                 break;
                             case "gui":
-                                ((Player) commandSender).openInventory(new CommitsPanel().getInventory());
+                                ((Player) commandSender).openInventory(new ArchivesPanel().getInventory());
                                 break;
                         }
                     } else {

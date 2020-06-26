@@ -26,27 +26,27 @@ public class DeleteCommand {
         }
     }
 
-    private static void RequestConfirm(CommandSender sender, String commitId) throws ParseException {
+    private static void RequestConfirm(CommandSender sender, String archiveId) throws ParseException {
         sender.sendMessage("");
         sender.sendMessage(MessageTemplateManager.title(10, "Request Confirm"));
 
-        sender.sendMessage(ChatColor.AQUA + "You are requesting to delete a commit and its file, you need to confirm your action!");
-        ViewCommand.ViewCommit(sender, commitId);
-        sender.sendMessage(ChatColor.AQUA + "Use \"/mcgit delete " + commitId + " confirm\" to confirm delete operation...");
+        sender.sendMessage(ChatColor.AQUA + "You are requesting to delete a archive and its file, you need to confirm your action!");
+        ViewCommand.ViewArchive(sender, archiveId);
+        sender.sendMessage(ChatColor.AQUA + "Use \"/mcgit delete " + archiveId + " confirm\" to confirm delete operation...");
 
         sender.sendMessage(MessageTemplateManager.ending(15));
         sender.sendMessage("");
     }
 
-    private static void Process(CommandSender sender, String commitId) {
+    private static void Process(CommandSender sender, String archiveId) {
         sender.sendMessage(ChatColor.RED + "Process started...");
 
         long operationStartTime = System.nanoTime();
         CompletableFuture.runAsync(() -> {
-            // Remove the commit which is going to delete in collection
+            // Remove the archive which is going to delete in collection
             try {
                 CollectionManager.getAll().forEach(collection -> {
-                    collection.getCommitsIncluded().removeIf(commit -> commit.getCommitId().toString().equals(commitId));
+                    collection.getArchivessIncluded().removeIf(archive -> archive.getArchiveId().toString().equals(archiveId));
                     try {
                         collection.saveToBukkitYmlFile();
                     } catch (IOException e) {
@@ -56,8 +56,8 @@ public class DeleteCommand {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            ZipManager.deleteDirectory(Main.Instance.getDataFolder().getAbsolutePath() + "/Backups/" + commitId.replace("-", ""));
-            new File(Constants.ConfigDirectory + "/Commits/" + commitId + ".yml").delete();
+            ZipManager.deleteDirectory(Main.Instance.getDataFolder().getAbsolutePath() + "/Backups/" + archiveId.replace("-", ""));
+            new File(Constants.ArchivesProfileDirectory + archiveId + ".yml").delete();
         }).whenComplete((Void t, Throwable u) -> {
             long operationFinishTime = System.nanoTime();
             sender.sendMessage(ChatColor.AQUA + "Operation completed in " + String.format("%.4f", (double) (operationFinishTime - operationStartTime) / 1000 / 1000 / 1000) + " second(s)");

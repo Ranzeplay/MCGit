@@ -1,7 +1,7 @@
 package me.ranzeplay.mcgit.models;
 
 import me.ranzeplay.mcgit.Constants;
-import me.ranzeplay.mcgit.managers.CommitManager;
+import me.ranzeplay.mcgit.managers.ArchiveManager;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -11,13 +11,13 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 
-public class CommitsCollection {
+public class ArchivesCollection {
     private UUID collectionId;
     private String name;
     private String description;
-    private ArrayList<Commit> commitsIncluded;
+    private ArrayList<Archive> commitsIncluded;
 
-    public CommitsCollection(String name, String description) {
+    public ArchivesCollection(String name, String description) {
         this.collectionId = UUID.randomUUID();
         this.name = name;
         this.description = description;
@@ -44,11 +44,11 @@ public class CommitsCollection {
         this.description = description;
     }
 
-    public ArrayList<Commit> getCommitsIncluded() {
+    public ArrayList<Archive> getArchivessIncluded() {
         return commitsIncluded;
     }
 
-    public void setCommitsIncluded(ArrayList<Commit> commitsIncluded) {
+    public void setArchivesIncluded(ArrayList<Archive> commitsIncluded) {
         this.commitsIncluded = commitsIncluded;
     }
 
@@ -61,12 +61,12 @@ public class CommitsCollection {
 
         // Only save commit id, to reduce size and flexible to use
         ArrayList<String> arr = new ArrayList<>();
-        for (Commit commit : this.commitsIncluded) {
-            arr.add(commit.getCommitId().toString());
+        for (Archive archive : this.commitsIncluded) {
+            arr.add(archive.getArchiveId().toString());
         }
         yamlc.set("commits", arr.toArray());
 
-        File collectionFile = new File(Constants.CollectionsDirectory + "/" + this.getCollectionId().toString() + ".yml");
+        File collectionFile = new File(Constants.CollectionsProfileDirectory + "/" + this.getCollectionId().toString() + ".yml");
         collectionFile.delete();
         collectionFile.createNewFile();
         yamlc.save(collectionFile);
@@ -74,7 +74,7 @@ public class CommitsCollection {
         return yamlc;
     }
 
-    public CommitsCollection getFromBukkitYmlFile(File ymlFile) throws ParseException {
+    public ArchivesCollection getFromBukkitYmlFile(File ymlFile) throws ParseException {
         YamlConfiguration filec = YamlConfiguration.loadConfiguration(ymlFile);
         this.collectionId = UUID.fromString(Objects.requireNonNull(filec.getString("id")));
         this.name = filec.getString("name");
@@ -83,7 +83,7 @@ public class CommitsCollection {
         // Find each commit from the list
         this.commitsIncluded = new ArrayList<>();
         for (String s : filec.getStringList("commits")) {
-            this.commitsIncluded.add(CommitManager.getCommit(s));
+            this.commitsIncluded.add(ArchiveManager.getArchive(s));
         }
 
         return this;

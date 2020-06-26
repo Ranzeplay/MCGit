@@ -1,10 +1,10 @@
 package me.ranzeplay.mcgit.commands;
 
+import me.ranzeplay.mcgit.managers.ArchiveManager;
 import me.ranzeplay.mcgit.managers.CollectionManager;
-import me.ranzeplay.mcgit.managers.CommitManager;
 import me.ranzeplay.mcgit.managers.MessageTemplateManager;
-import me.ranzeplay.mcgit.models.Commit;
-import me.ranzeplay.mcgit.models.CommitsCollection;
+import me.ranzeplay.mcgit.models.Archive;
+import me.ranzeplay.mcgit.models.ArchivesCollection;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -15,11 +15,11 @@ public class CollectionCommand {
                 case "create":
                     create(args, sender);
                     break;
-                case "addcommit":
-                    addCommit(args, sender);
+                case "addarchive":
+                    addArchive(args, sender);
                     break;
-                case "removecommit":
-                    removeCommit(args, sender);
+                case "removearchive":
+                    removeArchive(args, sender);
                     break;
                 case "delete":
                     delete(args, sender);
@@ -31,20 +31,20 @@ public class CollectionCommand {
 
     private static void create(String[] args, CommandSender sender) throws Exception {
         if (args.length > 3) {
-            CommitsCollection collection = CollectionManager.create(args[2], args[3]);
+            ArchivesCollection collection = CollectionManager.create(args[2], args[3]);
             ViewCommand.ViewCollection(sender, collection.getCollectionId().toString());
         }
     }
 
     private static void delete(String[] args, CommandSender sender) throws Exception {
         if (args.length > 2) {
-            CommitsCollection collection = CollectionManager.getSingal(args[2]);
+            ArchivesCollection collection = CollectionManager.getSingal(args[2]);
             if (collection != null) {
                 if (args.length > 3) {
                     if (args[3].equalsIgnoreCase("confirm")) {
                         sender.sendMessage(ChatColor.RED + "Processing...");
                         CollectionManager.delete(collection.getCollectionId().toString());
-                        sender.sendMessage(ChatColor.GREEN + "CommitsCollection has been deleted!");
+                        sender.sendMessage(ChatColor.GREEN + "The collection has been deleted!");
                     }
                 } else {
                     sender.sendMessage("");
@@ -61,24 +61,24 @@ public class CollectionCommand {
         }
     }
 
-    // Usage: /mcgit collection addCommit <collectionId> <commitId>
-    private static void addCommit(String[] args, CommandSender sender) throws Exception {
+    // Usage: /mcgit collection addArchive <collectionId> <archiveId>
+    private static void addArchive(String[] args, CommandSender sender) throws Exception {
         if (args.length > 3) {
-            CommitsCollection collection = CollectionManager.getSingal(args[2]);
-            Commit commit = CommitManager.getCommit(args[3]);
-            if (collection != null && commit != null) {
-                CollectionManager.addCommitToCollection(collection.getCollectionId().toString(), commit.getCommitId().toString());
+            ArchivesCollection collection = CollectionManager.getSingal(args[2]);
+            Archive archive = ArchiveManager.getArchive(args[3]);
+            if (collection != null && archive != null) {
+                CollectionManager.addArchiveToCollection(collection.getCollectionId().toString(), archive.getArchiveId().toString());
             }
         }
     }
 
-    // Usage: /mcgit collection removeCommit <collectionId> <commitId>
-    private static void removeCommit(String[] args, CommandSender sender) throws Exception {
+    // Usage: /mcgit collection removeArchive <collectionId> <archiveId>
+    private static void removeArchive(String[] args, CommandSender sender) throws Exception {
         if (args.length > 3) {
-            CommitsCollection collection = CollectionManager.getSingal(args[2]);
-            Commit commit = CommitManager.getCommit(args[3]);
-            if (collection != null && commit != null) {
-                CollectionManager.removeFromCollection(collection.getCollectionId().toString(), commit.getCommitId().toString());
+            ArchivesCollection collection = CollectionManager.getSingal(args[2]);
+            Archive archive = ArchiveManager.getArchive(args[3]);
+            if (collection != null && archive != null) {
+                CollectionManager.removeFromCollection(collection.getCollectionId().toString(), archive.getArchiveId().toString());
             }
         }
     }
