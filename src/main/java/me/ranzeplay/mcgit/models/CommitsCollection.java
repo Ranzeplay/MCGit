@@ -1,9 +1,11 @@
 package me.ranzeplay.mcgit.models;
 
+import me.ranzeplay.mcgit.Constants;
 import me.ranzeplay.mcgit.managers.CommitManager;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -50,7 +52,7 @@ public class CommitsCollection {
         this.commitsIncluded = commitsIncluded;
     }
 
-    public YamlConfiguration saveToBukkitYmlFile() {
+    public YamlConfiguration saveToBukkitYmlFile() throws IOException {
         YamlConfiguration yamlc = new YamlConfiguration();
 
         yamlc.set("id", this.getCollectionId().toString());
@@ -63,6 +65,11 @@ public class CommitsCollection {
             arr.add(commit.getCommitId().toString());
         }
         yamlc.set("commits", arr.toArray());
+
+        File collectionFile = new File(Constants.CollectionsDirectory + "/" + this.getCollectionId().toString() + ".yml");
+        collectionFile.delete();
+        collectionFile.createNewFile();
+        yamlc.save(collectionFile);
 
         return yamlc;
     }

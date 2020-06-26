@@ -2,12 +2,14 @@ package me.ranzeplay.mcgit.commands;
 
 import me.ranzeplay.mcgit.Constants;
 import me.ranzeplay.mcgit.Main;
+import me.ranzeplay.mcgit.managers.CollectionManager;
 import me.ranzeplay.mcgit.managers.MessageTemplateManager;
 import me.ranzeplay.mcgit.managers.zip.ZipManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.concurrent.CompletableFuture;
 
@@ -41,6 +43,19 @@ public class DeleteCommand {
 
         long operationStartTime = System.nanoTime();
         CompletableFuture.runAsync(() -> {
+            // Remove the commit which is going to delete in collection
+            try {
+                CollectionManager.getAll().forEach(collection -> {
+                    collection.getCommitsIncluded().removeIf(commit -> commit.getCommitId().toString().equals(commitId));
+                    try {
+                        collection.saveToBukkitYmlFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             ZipManager.deleteDirectory(Main.Instance.getDataFolder().getAbsolutePath() + "/Backups/" + commitId.replace("-", ""));
             new File(Constants.ConfigDirectory + "/Commits/" + commitId + ".yml").delete();
         }).whenComplete((Void t, Throwable u) -> {

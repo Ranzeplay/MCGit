@@ -71,8 +71,22 @@ public class CommandCompleter implements TabCompleter {
                     } else if (s.size() == 3) {
                         if (s.get(0).equalsIgnoreCase("commit")) {
                             availableChoices = getAllWorldsName();
-                        } else if (s.get(0).equalsIgnoreCase("collection") && (s.get(1).equalsIgnoreCase("addCommit") || s.get(1).equalsIgnoreCase("removeCommit"))) {
-                            availableChoices = getAllCommitsId();
+                        } else if (s.get(0).equalsIgnoreCase("collection")) {
+                            if ((s.get(1).equalsIgnoreCase("addCommit"))) {
+                                availableChoices = getAllCommitsId();
+                            } else if ((s.get(1).equalsIgnoreCase("removeCommit"))) {
+                                try {
+                                    CommitsCollection collection = CollectionManager.getSingal(s.get(2));
+                                    ArrayList<String> finalAvailableChoices = availableChoices;
+                                    collection.getCommitsIncluded().stream().forEach(c -> {
+                                        finalAvailableChoices.add(c.getCommitId().toString());
+                                    });
+                                    availableChoices = finalAvailableChoices;
+                                } catch (ParseException e) {
+                                    // e.printStackTrace();
+                                }
+
+                            }
                         }
                     }
                 }
