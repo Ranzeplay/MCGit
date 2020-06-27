@@ -8,9 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.text.ParseException;
-
-public class CommandExec implements CommandExecutor {
+public class CommandBase implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
         if (command.isRegistered()) {
@@ -30,29 +28,6 @@ public class CommandExec implements CommandExecutor {
                                 try {
                                     CollectionCommand.Do(args, commandSender);
                                 } catch (Exception e) {
-                                    commandSender.sendMessage(MessageTemplateManager.commandExecutedWithErrors());
-                                    e.printStackTrace();
-                                }
-                            case "view":
-                                try {
-                                    ViewCommand.Do(args, commandSender);
-                                } catch (ParseException e) {
-                                    commandSender.sendMessage(MessageTemplateManager.commandExecutedWithErrors());
-                                    e.printStackTrace();
-                                }
-                                break;
-                            case "rollback":
-                                try {
-                                    RollbackCommand.Do(args, commandSender);
-                                } catch (Exception e) {
-                                    commandSender.sendMessage(MessageTemplateManager.commandExecutedWithErrors());
-                                    e.printStackTrace();
-                                }
-                                break;
-                            case "delete":
-                                try {
-                                    DeleteCommand.Do(args, commandSender);
-                                } catch (ParseException e) {
                                     commandSender.sendMessage(MessageTemplateManager.commandExecutedWithErrors());
                                     e.printStackTrace();
                                 }

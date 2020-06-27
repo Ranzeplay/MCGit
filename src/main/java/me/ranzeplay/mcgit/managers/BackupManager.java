@@ -7,7 +7,7 @@ import me.ranzeplay.mcgit.models.Archive;
 
 import java.io.File;
 
-public class BackupsManager {
+public class BackupManager {
     /**
      * Will not check if the archiveId is valid
      *
@@ -15,7 +15,7 @@ public class BackupsManager {
      * @throws Exception When unzip operation fail
      */
     public static void Rollback(String archiveId) throws Exception {
-        Archive archive = new Archive(null, null, null).getFromBukkitYmlFile(new File(Constants.ArchivesProfileDirectory + archiveId + ".yml"));
+        Archive archive = new Archive(null, null, null).getFromBukkitYmlFile(new File(Constants.ArchivesProfileDirectory + "/" + archiveId + ".yml"));
         if (Main.Instance.getConfig().getBoolean("compressNetherWorldByDefault")) {
             ZipManager.replaceWorldFromBackup(archive.getWorldName().replaceAll("_nether", "").replaceAll("_the_end", "") + "_nether",
                     archive.getArchiveId().toString().replace("-", ""));
@@ -37,7 +37,7 @@ public class BackupsManager {
     /**
      * To abort rollback operation if it was scheduled
      *
-     * @return Has been cancelled or not scheduled
+     * @return Has been cancelled(true) or not scheduled(false)
      */
     public static boolean Abort() {
         if (Constants.IsRollbackScheduled) {
