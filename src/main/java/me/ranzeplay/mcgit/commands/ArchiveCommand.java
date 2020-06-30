@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
@@ -30,6 +31,7 @@ public class ArchiveCommand {
                     create(args, sender);
                     break;
                 case "view":
+                    view(args, sender);
                     break;
                 case "delete":
                     delete(args, sender);
@@ -96,6 +98,7 @@ public class ArchiveCommand {
                 e.printStackTrace();
             }
         }).whenComplete((Void t, Throwable u) -> {
+
             long operationCompleteTime = System.nanoTime();
 
             sender.sendMessage("");
@@ -109,6 +112,53 @@ public class ArchiveCommand {
             sender.sendMessage(MessageTemplateManager.ending(15));
             sender.sendMessage("");
         });
+    }
+
+    private static void view(String[] args, CommandSender sender) throws ParseException {
+        if (args.length > 2) {
+            if (args[2].equalsIgnoreCase("ALL")) {
+                ArrayList<Archive> existingArchives = ArchiveManager.getAllArchives();
+                // existingArchives = reverseArrayList(existingArchives);
+
+                sender.sendMessage("");
+                sender.sendMessage(MessageTemplateManager.title(10, "Existing Archives"));
+                for (Archive archive : existingArchives) {
+                    TextComponent detailsMessage = new TextComponent();
+                    detailsMessage.setText(ChatColor.GREEN + archive.getDescription() + " " + ChatColor.YELLOW + Constants.DateFormat.format(archive.getCreateTime()));
+                    detailsMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mcgit archive view" + archive.getArchiveId().toString()));
+                    sender.spigot().sendMessage(detailsMessage);
+                }
+                if (existingArchives.size() == 0) {
+                    sender.sendMessage(ChatColor.AQUA + "Nothing to show");
+                }
+            } else {
+                File archiveFile = new File(Constants.ArchivesProfileDirectory + "/" + args[2] + ".yml");
+                if (!archiveFile.exists()) {
+                    sender.sendMessage(ChatColor.AQUA + "Archive Not Found");
+                    return;
+                }
+
+                Archive archive = new Archive(null, null, null).getFromBukkitYmlFile(archiveFile);
+
+                sender.sendMessage("");
+                sender.sendMessage(MessageTemplateManager.title(12, "Archive Details"));
+                sender.sendMessage(ChatColor.YELLOW + "Archive Id: " + ChatColor.GREEN + archive.getArchiveId());
+                sender.sendMessage(ChatColor.YELLOW + "Description: " + ChatColor.GREEN + archive.getDescription());
+                sender.sendMessage(ChatColor.YELLOW + "Create time: " + ChatColor.GREEN + archive.getCreateTime());
+                sender.sendMessage(ChatColor.YELLOW + "World: " + ChatColor.GREEN + archive.getWorld().getName());
+                sender.sendMessage(ChatColor.YELLOW + "Operator: " + ChatColor.GREEN + archive.getPlayer().getName() + " (" + archive.getPlayer().getUniqueId() + ")");
+                sender.sendMessage(ChatColor.YELLOW + "Size: " + String.format("%.4f", ArchiveManager.GetArchiveTotalSize(archive.getArchiveId().toString()) / 1024 / 1024) + "MB");
+
+                TextComponent actionsMessage = new TextComponent();
+                actionsMessage.setText(ChatColor.RED + "[Rollback]");
+                actionsMessage.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/mcgit rollback " + archive.getArchiveId().toString()));
+                sender.spigot().sendMessage(actionsMessage);
+
+            }
+
+            sender.sendMessage(MessageTemplateManager.ending(17));
+            sender.sendMessage("");
+        }
     }
 
     private static void delete(String[] args, CommandSender sender) throws ParseException {
