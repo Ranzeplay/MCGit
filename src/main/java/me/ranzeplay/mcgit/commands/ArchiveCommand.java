@@ -65,15 +65,17 @@ public class ArchiveCommand {
 
         Archive archive = ArchiveManager.makeArhive(args[2], execPlayer, targetWorld);
         if (targetWorld == null) {
-            sender.sendMessage(ChatColor.RED + "Base world (overworld) not found");
+            sender.sendMessage(ChatColor.RED + "Base world (overworld, DIM0) not found");
             return;
         }
 
+        // Turn off Auto-Save to prevent the exception like "file is busy"
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-off");
 
         // Run Save-All command on server console to save all worlds
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all");
-
         Bukkit.savePlayers();
+
         CompletableFuture.runAsync(() -> {
             if (Main.Instance.getConfig().getBoolean("compressNetherWorldByDefault")) {
                 World netherWorld = Bukkit.getWorld(targetWorld.getName() + "_nether");
@@ -112,6 +114,8 @@ public class ArchiveCommand {
             sender.sendMessage(MessageTemplateManager.ending(15));
             sender.sendMessage("");
         });
+
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-on");
     }
 
     private static void view(String[] args, CommandSender sender) throws ParseException {
