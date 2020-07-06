@@ -20,72 +20,102 @@ public class CommandCompleter implements TabCompleter {
     public List<String> onTabComplete(CommandSender commandSender, Command command, String label, String[] args) {
         ArrayList<String> availableChoices = new ArrayList<>();
 
-        ArrayList<String> s = new ArrayList<>();
+        ArrayList<String> param = new ArrayList<>();
         for (String arg : args) {
             if (!arg.isEmpty()) {
-                s.add(arg);
+                param.add(arg);
             }
         }
 
         if (command.isRegistered()) {
             if (commandSender instanceof Player) {
                 if (command.getName().equalsIgnoreCase("mcgit") || command.getAliases().contains(label)) {
-                    if (s.size() == 0) {
-                        availableChoices.add("gui");
+                    // mcgit [fill]
+                    if (param.size() == 0) {
                         availableChoices.add("archive");
                         availableChoices.add("collection");
-                        availableChoices.add("view");
-                        availableChoices.add("rollback");
-                        availableChoices.add("delete");
-                    } else if (s.size() == 1) {
-                        if (s.get(0).equalsIgnoreCase("view")) {
-                            availableChoices.add("archives");
-                            availableChoices.add("archive");
-                            availableChoices.add("collections");
-                            availableChoices.add("collection");
-                        } else if (s.get(0).equalsIgnoreCase("rollback") || s.get(0).equalsIgnoreCase("delete")) {
-                            availableChoices = getAllArchivesId();
+                        availableChoices.add("gui");
+                    }
 
-                            if (s.get(0).equalsIgnoreCase("rollback")) {
-                                availableChoices.add("abort");
-                            }
-                        } else if (s.get(0).equalsIgnoreCase("collection")) {
+                    // mcgit <archive|collection> [fill]
+                    if (param.size() == 1) {
+                        // mcgit archive [fill]
+                        if (param.get(0).equalsIgnoreCase("archive")) {
                             availableChoices.add("create");
+                            availableChoices.add("view");
+                            availableChoices.add("rollback");
                             availableChoices.add("delete");
-                            availableChoices.add("addArchive");
-                            availableChoices.add("removeArchive");
                         }
-                    } else if (s.size() == 2) {
-                        if (s.get(0).equalsIgnoreCase("view")) {
-                            if (s.get(1).equalsIgnoreCase("archive")) {
-                                availableChoices = getAllArchivesId();
-                            }
-                            if (s.get(1).equalsIgnoreCase("collection")) {
-                                availableChoices = getAllCollectionsId();
-                            }
-                        } else if (s.get(0).equalsIgnoreCase("collection")) {
-                            if (s.get(1).equalsIgnoreCase("addArchive") || s.get(1).equalsIgnoreCase("removeArchiveArchive") || s.get(1).equalsIgnoreCase("delete")) {
-                                availableChoices = getAllCollectionsId();
-                            }
-                        }
-                    } else if (s.size() == 3) {
-                        if (s.get(0).equalsIgnoreCase("archive")) {
-                            availableChoices = getAllWorldsName();
-                        } else if (s.get(0).equalsIgnoreCase("collection")) {
-                            if ((s.get(1).equalsIgnoreCase("addArchive"))) {
-                                availableChoices = getAllArchivesId();
-                            } else if ((s.get(1).equalsIgnoreCase("removeArchive"))) {
-                                try {
-                                    ArchivesCollection collection = CollectionManager.getSingal(s.get(2));
-                                    ArrayList<String> finalAvailableChoices = availableChoices;
-                                    collection.getArchivessIncluded().stream().forEach(c -> {
-                                        finalAvailableChoices.add(c.getArchiveId().toString());
-                                    });
-                                    availableChoices = finalAvailableChoices;
-                                } catch (ParseException e) {
-                                    // e.printStackTrace();
-                                }
 
+                        // mcgit collection [fill]
+                        if (param.get(0).equalsIgnoreCase("collection")) {
+                            availableChoices.add("create");
+                            availableChoices.add("view");
+                            availableChoices.add("addCommit");
+                            availableChoices.add("removeCommit");
+                            availableChoices.add("delete");
+                        }
+                    }
+
+                    // mcgit <valid> <valid> [fill]
+                    if (param.size() == 2) {
+                        // mcgit archive <valid> [fill]
+                        if (param.get(0).equalsIgnoreCase("archive")) {
+                            // mcgit archive view [fill]
+                            if (param.get(1).equalsIgnoreCase("view")) {
+                                availableChoices = getAllArchivesId();
+                                availableChoices.add("ALL");
+                            }
+
+                            // mcgit archive rollback [fill]
+                            if (param.get(1).equalsIgnoreCase("rollback")) {
+                                availableChoices = getAllArchivesId();
+                                availableChoices.add("ABORT");
+                            }
+
+                            // mcgit archive delete [fill]
+                            if (param.get(1).equalsIgnoreCase("delete")) {
+                                availableChoices = getAllArchivesId();
+                            }
+                        }
+
+                        // mcgit collection <valid> [fill]
+                        if (param.get(0).equalsIgnoreCase("collection")) {
+                            // mcgit collection view [fill]
+                            if (param.get(1).equalsIgnoreCase("view")) {
+                                availableChoices = getAllCollectionsId();
+                                availableChoices.add("ALL");
+                            }
+
+                            // mcgit collection addArchive [fill(collectionId + archiveId)]
+                            if (param.get(1).equalsIgnoreCase("addCommit")) {
+                                availableChoices = getAllArchivesId();
+                            }
+
+                            // mcgit collection removeArchive [fill(collectionId + archiveId[in collection])]
+                            if (param.get(1).equalsIgnoreCase("removeCommit")) {
+                                availableChoices = getAllCollectionsId();
+                            }
+
+                            // mcgit collection delete [fill]
+                            if (param.get(1).equalsIgnoreCase("delete")) {
+                                availableChoices = getAllCollectionsId();
+                            }
+                        }
+                    }
+
+                    // mcgit <valid> <valid> <valid> [fill]
+                    if (param.size() == 3) {
+                        // mcgit collection <valid> <valid> [fill]
+                        if (param.get(0).equalsIgnoreCase("collection")) {
+                            // mcgit collection addArchive <*collectionId> [fill]
+                            if (param.get(1).equalsIgnoreCase("addArchive")) {
+                                availableChoices = getAllArchivesId();
+                            }
+
+                            // mcgit collection removeArchive <*collectionId> [fill]
+                            if (param.get(1).equalsIgnoreCase("removeArchive")) {
+                                availableChoices = getAllArchivesId();
                             }
                         }
                     }

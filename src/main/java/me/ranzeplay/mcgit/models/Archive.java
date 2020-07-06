@@ -12,7 +12,6 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
-//TODO Rename Archive to Archive globally
 public class Archive {
     private UUID archiveId;
     private String description;

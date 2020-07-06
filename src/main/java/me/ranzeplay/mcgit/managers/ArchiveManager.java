@@ -27,9 +27,9 @@ public class ArchiveManager {
 
     public static ArrayList<Archive> getAllArchives() throws ParseException {
         ArrayList<Archive> list = new ArrayList<>();
-        File files = Constants.ArchivesProfileDirectory;
-        if (Objects.requireNonNull(files.listFiles()).length == 0) return list;
-        for (File file : Objects.requireNonNull(Constants.ArchivesProfileDirectory.listFiles())) {
+        File archivesDirectory = Constants.ArchivesProfileDirectory;
+        if (Objects.requireNonNull(archivesDirectory.listFiles()).length == 0) return list;
+        for (File file : Objects.requireNonNull(archivesDirectory.listFiles())) {
             list.add(new Archive(null, null, null).getFromBukkitYmlFile(file));
         }
 

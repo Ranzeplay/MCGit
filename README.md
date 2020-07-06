@@ -2,6 +2,15 @@
 
 A backup plugin for Minecraft Spigot server
 
+#### Project Status
+![License](https://img.shields.io/github/license/ranzeplay/MCGit)
+![Language](https://img.shields.io/github/languages/top/ranzeplay/MCGit)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/ranzeplay/MCGit)
+![GitHub last commit](https://img.shields.io/github/last-commit/ranzeplay/MCGit)
+![GitHub repo size](https://img.shields.io/github/repo-size/ranzeplay/MCGit)
+![GitHub issues](https://img.shields.io/github/issues/ranzeplay/MCGit)
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/ranzeplay/MCGit)
+
 *Build Status:* [![Build status](https://dev.azure.com/ranzeplay/MCGit/_apis/build/status/MCGit-Maven-CI)](https://dev.azure.com/ranzeplay/MCGit/_build/latest?definitionId=-1)
 
 ---

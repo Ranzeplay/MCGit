@@ -11,8 +11,11 @@ public class Constants {
     public static final SimpleDateFormat DateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 
     // Backup File Configurations
-    public static final File ArchivesProfileDirectory = new File(Constants.ProfileDirectory + "/Archives");
-    public static final File CollectionsProfileDirectory = new File(Constants.ProfileDirectory + "/Collections");
+    public static final File ArchivesProfileDirectory = new File(Constants.ProfileDirectory + "/Archives/");
+    public static final File CollectionsProfileDirectory = new File(Constants.ProfileDirectory + "/Collections/");
+
+    // Other
+    public static final File TempDirectory = new File(Main.Instance.getDataFolder() + "/Temp/");
 
     /**
      * Just used to tell players if it is going to rollback server save st the next server startup

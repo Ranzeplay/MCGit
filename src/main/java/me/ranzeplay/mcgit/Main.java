@@ -1,9 +1,9 @@
 package me.ranzeplay.mcgit;
 
+import me.ranzeplay.mcgit.commands.CommandBase;
 import me.ranzeplay.mcgit.commands.CommandCompleter;
-import me.ranzeplay.mcgit.commands.CommandExec;
 import me.ranzeplay.mcgit.gui.ArchivesPanel;
-import me.ranzeplay.mcgit.managers.BackupsManager;
+import me.ranzeplay.mcgit.managers.BackupManager;
 import me.ranzeplay.mcgit.managers.config.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,7 +26,7 @@ public final class Main extends JavaPlugin {
             e.printStackTrace();
         }
 
-        Objects.requireNonNull(Bukkit.getPluginCommand("mcgit")).setExecutor(new CommandExec());
+        Objects.requireNonNull(Bukkit.getPluginCommand("mcgit")).setExecutor(new CommandBase());
         Objects.requireNonNull(Bukkit.getPluginCommand("mcgit")).setTabCompleter(new CommandCompleter());
 
         Bukkit.getPluginManager().registerEvents(new ArchivesPanel(), this);
@@ -36,7 +36,7 @@ public final class Main extends JavaPlugin {
         if (!Objects.requireNonNull(rollbackArchiveId).equalsIgnoreCase("unset")) {
             getServer().getLogger().log(Level.INFO, "Pending rollback found, executing... (" + rollbackArchiveId + ")");
             try {
-                BackupsManager.Rollback(rollbackArchiveId);
+                BackupManager.Rollback(rollbackArchiveId);
                 getConfig().set("nextRollback", "unset");
                 saveConfig();
             } catch (Exception e) {
