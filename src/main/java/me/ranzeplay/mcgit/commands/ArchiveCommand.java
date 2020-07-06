@@ -165,7 +165,7 @@ public class ArchiveCommand {
         }
     }
 
-    private static void delete(String[] args, CommandSender sender) throws ParseException {
+    private static void delete(String[] args, CommandSender sender) {
         if (args.length > 2) {
             String archiveId = args[2];
             if (args.length == 3) {
@@ -173,7 +173,7 @@ public class ArchiveCommand {
                 sender.sendMessage(MessageTemplateManager.title(10, "Request Confirm"));
 
                 sender.sendMessage(ChatColor.AQUA + "You are requesting to delete a archive and its file, you need to confirm your action!");
-                ViewCommand.ViewArchive(sender, archiveId);
+                ((Player) sender).performCommand("mcgit archive view" + archiveId);
                 sender.sendMessage(ChatColor.AQUA + "Use \"/mcgit delete " + archiveId + " confirm\" to confirm delete operation...");
 
                 sender.sendMessage(MessageTemplateManager.ending(15));
@@ -263,7 +263,7 @@ public class ArchiveCommand {
                     sender.sendMessage(MessageTemplateManager.title(10, "Request Confirm"));
 
                     sender.sendMessage(net.md_5.bungee.api.ChatColor.AQUA + "You are requesting to rollback the server, you need to confirm your action!");
-                    ViewCommand.ViewArchive(sender, archiveId);
+                    ((Player) sender).performCommand("mcgit archive view" + archiveId);
                     sender.sendMessage(net.md_5.bungee.api.ChatColor.AQUA + "Use \"/mcgit rollback " + archiveId + " confirm\" to confirm rollback operation...");
 
                     sender.sendMessage(MessageTemplateManager.ending(15));

@@ -1,6 +1,5 @@
 package me.ranzeplay.mcgit.gui;
 
-import me.ranzeplay.mcgit.commands.ViewCommand;
 import me.ranzeplay.mcgit.managers.ArchiveManager;
 import me.ranzeplay.mcgit.models.Archive;
 import org.bukkit.Bukkit;
@@ -55,13 +54,13 @@ public class ArchivesPanel implements InventoryHolder, Listener {
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) throws ParseException {
+    public void onInventoryClick(InventoryClickEvent event) {
         if (event.getView().getTitle().equalsIgnoreCase("All Archives")) {
             Player player = (Player) event.getWhoClicked();
             String archiveId = Objects.requireNonNull(Objects.requireNonNull(event.getCurrentItem()).getItemMeta()).getDisplayName();
             if (event.getClick().isLeftClick()) {
                 player.closeInventory();
-                ViewCommand.ViewArchive(player, archiveId);
+                player.performCommand("mcgit archive view" + archiveId);
             } else if (event.getClick().isRightClick()) {
                 player.closeInventory();
                 player.performCommand("mcgit rollback " + archiveId);

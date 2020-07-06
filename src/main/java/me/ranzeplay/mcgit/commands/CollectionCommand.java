@@ -10,6 +10,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.text.ParseException;
@@ -41,7 +42,7 @@ public class CollectionCommand {
     private static void create(String[] args, CommandSender sender) throws Exception {
         if (args.length > 3) {
             ArchivesCollection collection = CollectionManager.create(args[2], args[3]);
-            ViewCommand.ViewCollection(sender, collection.getCollectionId().toString());
+            ((Player) sender).performCommand("mcgit collection view" + collection.getCollectionId().toString());
         }
     }
 
@@ -99,7 +100,7 @@ public class CollectionCommand {
                     sender.sendMessage(MessageTemplateManager.title(10, "Request Confirm"));
 
                     sender.sendMessage(ChatColor.AQUA + "You are requesting to delete a collection, you need to confirm your action!");
-                    ViewCommand.ViewCollection(sender, collection.getCollectionId().toString());
+                    ((Player) sender).performCommand("mcgit collection view" + collection.getCollectionId().toString());
                     sender.sendMessage(ChatColor.AQUA + "Use \"/mcgit collection delete " + collection.getCollectionId().toString() + " confirm\" to confirm delete operation...");
 
                     sender.sendMessage(MessageTemplateManager.ending(15));
