@@ -179,7 +179,7 @@ public class ArchiveCommand {
                 sender.sendMessage(MessageTemplateManager.ending(15));
                 sender.sendMessage("");
             } else if (args.length == 4 && args[3].equalsIgnoreCase("confirm")) {
-                sender.sendMessage(ChatColor.RED + "Process started...");
+                sender.sendMessage(ChatColor.RED + "Operation started...");
 
                 long operationStartTime = System.nanoTime();
                 CompletableFuture.runAsync(() -> {
@@ -196,8 +196,8 @@ public class ArchiveCommand {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    ZipManager.deleteDirectory(Main.Instance.getDataFolder().getAbsolutePath() + "/Backups/" + archiveId.replace("-", ""));
-                    new File(Constants.ArchivesProfileDirectory + archiveId + ".yml").delete();
+                    ZipManager.deleteDirectory(Constants.ArchivesDirectory + "/" + archiveId.replace("-", ""));
+                    new File(Constants.ArchivesProfileDirectory + "/" + archiveId + ".yml").delete();
                 }).whenComplete((Void t, Throwable u) -> {
                     long operationFinishTime = System.nanoTime();
                     sender.sendMessage(ChatColor.AQUA + "Operation completed in " + String.format("%.4f", (double) (operationFinishTime - operationStartTime) / 1000 / 1000 / 1000) + " second(s)");
