@@ -21,6 +21,10 @@ public class MessageTemplateManager {
         return ChatColor.BOLD + new String(divider) + " END " + new String(divider);
     }
 
+    public static String commandHelper(String commandContent, String commandDescription) {
+        return ChatColor.YELLOW + commandContent + ChatColor.WHITE + " - " + ChatColor.GREEN + commandDescription;
+    }
+
     public static String commandExecutedWithErrors() {
         return ChatColor.RED + "Command executed with error(s)";
     }

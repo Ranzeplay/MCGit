@@ -29,7 +29,7 @@ A backup plugin for Minecraft Spigot server
 
 - **Collection**
 
-    - **/mcgit collection add <collectionName> <collectionDescription>** to create a archives collection to collate archives
+    - **/mcgit collection create <collectionName> <collectionDescription>** to create a archives collection to collate archives
     
     - **/mcgit collection view <[collection id]|ALL>** to view details of a specific collection or all collections
 

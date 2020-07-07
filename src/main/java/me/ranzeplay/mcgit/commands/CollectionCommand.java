@@ -34,6 +34,7 @@ public class CollectionCommand {
                 case "delete":
                     delete(args, sender);
                 default:
+                    HelpCommand.Collection(sender);
                     break;
             }
         }
