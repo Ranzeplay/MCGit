@@ -29,21 +29,22 @@ public class ArchiveCommand {
             switch (args[1].toLowerCase()) {
                 case "create":
                     create(args, sender);
-                    break;
+                    return;
                 case "view":
                     view(args, sender);
-                    break;
+                    return;
                 case "delete":
                     delete(args, sender);
-                    break;
+                    return;
                 case "rollback":
                     rollback(args, sender);
-                    break;
+                    return;
                 default:
-                    HelpCommand.Archive(sender);
                     break;
             }
         }
+
+        HelpCommand.Archive(sender);
     }
 
     private static void create(String[] args, CommandSender sender) throws IOException {

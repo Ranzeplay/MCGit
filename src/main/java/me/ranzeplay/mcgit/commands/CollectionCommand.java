@@ -18,26 +18,29 @@ import java.util.ArrayList;
 
 public class CollectionCommand {
     public static void Do(String[] args, CommandSender sender) throws Exception {
-        if (args.length > 1) {
+        if (args.length >= 1) {
             switch (args[1].toLowerCase()) {
                 case "create":
                     create(args, sender);
-                    break;
+                    return;
                 case "view":
                     view(args, sender);
+                    return;
                 case "addarchive":
                     addArchive(args, sender);
-                    break;
+                    return;
                 case "removearchive":
                     removeArchive(args, sender);
-                    break;
+                    return;
                 case "delete":
                     delete(args, sender);
+                    return;
                 default:
-                    HelpCommand.Collection(sender);
                     break;
             }
         }
+
+        HelpCommand.Collection(sender);
     }
 
     private static void create(String[] args, CommandSender sender) throws Exception {
