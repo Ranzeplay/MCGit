@@ -1,8 +1,7 @@
 package me.ranzeplay.mcgit.gui;
 
-import me.ranzeplay.mcgit.commands.ViewCommand;
-import me.ranzeplay.mcgit.managers.GitManager;
-import me.ranzeplay.mcgit.models.Commit;
+import me.ranzeplay.mcgit.managers.ArchiveManager;
+import me.ranzeplay.mcgit.models.Archive;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -19,18 +18,18 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class CommitsPanel implements InventoryHolder, Listener {
+public class ArchivesPanel implements InventoryHolder, Listener {
     public Inventory getInventory() {
-        ArrayList<Commit> commitsList = null;
+        ArrayList<Archive> archivesList = null;
         try {
-            commitsList = GitManager.getAllCommits();
+            archivesList = ArchiveManager.getAllArchives();
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        Inventory inventory = Bukkit.createInventory(null, 9 * 6, "All Commits");
+        Inventory inventory = Bukkit.createInventory(null, 9 * 6, "All Archives");
         int i = 1;
-        for (Commit commit : Objects.requireNonNull(commitsList)) {
+        for (Archive archive : Objects.requireNonNull(archivesList)) {
             if (i >= 54) {
                 break;
             }
@@ -38,13 +37,13 @@ public class CommitsPanel implements InventoryHolder, Listener {
 
             ItemStack item = new ItemStack(Material.GREEN_WOOL, 1);
             ItemMeta meta = Objects.requireNonNull(item.getItemMeta()).clone();
-            meta.setDisplayName(commit.getCommitId().toString());
+            meta.setDisplayName(archive.getArchiveId().toString());
 
             ArrayList<String> lore = new ArrayList<>();
-            lore.add(ChatColor.GREEN + "Description: " + ChatColor.YELLOW + commit.getDescription());
-            lore.add(ChatColor.GREEN + "Create Time: " + ChatColor.YELLOW + commit.getCreateTime());
-            lore.add(ChatColor.GREEN + "Operator: " + ChatColor.YELLOW + commit.getPlayer().getName());
-            lore.add(ChatColor.GREEN + "World Name: " + ChatColor.YELLOW + commit.getWorld());
+            lore.add(ChatColor.GREEN + "Description: " + ChatColor.YELLOW + archive.getDescription());
+            lore.add(ChatColor.GREEN + "Create Time: " + ChatColor.YELLOW + archive.getCreateTime());
+            lore.add(ChatColor.GREEN + "Operator: " + ChatColor.YELLOW + archive.getPlayer().getName());
+            lore.add(ChatColor.GREEN + "World Name: " + ChatColor.YELLOW + archive.getWorld());
             meta.setLore(lore);
 
             item.setItemMeta(meta);
@@ -55,16 +54,16 @@ public class CommitsPanel implements InventoryHolder, Listener {
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) throws ParseException {
-        if (event.getView().getTitle().equalsIgnoreCase("All Commits")) {
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (event.getView().getTitle().equalsIgnoreCase("All Archives")) {
             Player player = (Player) event.getWhoClicked();
-            String commitId = Objects.requireNonNull(Objects.requireNonNull(event.getCurrentItem()).getItemMeta()).getDisplayName();
+            String archiveId = Objects.requireNonNull(Objects.requireNonNull(event.getCurrentItem()).getItemMeta()).getDisplayName();
             if (event.getClick().isLeftClick()) {
                 player.closeInventory();
-                ViewCommand.ViewCommit(player, commitId);
+                player.performCommand("mcgit archive view" + archiveId);
             } else if (event.getClick().isRightClick()) {
                 player.closeInventory();
-                player.performCommand("mcgit rollback " + commitId);
+                player.performCommand("mcgit rollback " + archiveId);
             }
 
             event.setCancelled(true);

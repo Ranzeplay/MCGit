@@ -1,7 +1,6 @@
 package me.ranzeplay.mcgit.models;
 
 import me.ranzeplay.mcgit.Constants;
-import me.ranzeplay.mcgit.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -13,14 +12,14 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Commit {
-    private UUID commitId;
+public class Archive {
+    private UUID archiveId;
     private String description;
     private Date createTime;
     private UUID playerUUID;
     private String worldName;
 
-    public Commit(String description, Player player, World world) {
+    public Archive(String description, Player player, World world) {
         if (player == null) {
             this.playerUUID = UUID.randomUUID();
         } else {
@@ -33,13 +32,13 @@ public class Commit {
             this.worldName = world.getName();
         }
 
-        this.commitId = UUID.randomUUID();
+        this.archiveId = UUID.randomUUID();
         this.description = description;
         this.createTime = new Date();
     }
 
-    public UUID getCommitId() {
-        return commitId;
+    public UUID getArchiveId() {
+        return archiveId;
     }
 
     public String getDescription() {
@@ -63,8 +62,10 @@ public class Commit {
     }
 
 
-    public YamlConfiguration saveToBukkitYmlFile(YamlConfiguration yamlc) {
-        yamlc.set("id", this.getCommitId().toString());
+    public YamlConfiguration saveToBukkitYmlFile() {
+        YamlConfiguration yamlc = new YamlConfiguration();
+
+        yamlc.set("id", this.getArchiveId().toString());
         yamlc.set("description", this.getDescription());
         yamlc.set("time", Constants.DateFormat.format(new Date()));
         yamlc.set("player", this.getPlayer().getUniqueId().toString());
@@ -73,9 +74,9 @@ public class Commit {
         return yamlc;
     }
 
-    public Commit getFromBukkitYmlFile(File ymlFile) throws ParseException {
+    public Archive getFromBukkitYmlFile(File ymlFile) throws ParseException {
         YamlConfiguration filec = YamlConfiguration.loadConfiguration(ymlFile);
-        this.commitId = UUID.fromString(Objects.requireNonNull(filec.getString("id")));
+        this.archiveId = UUID.fromString(Objects.requireNonNull(filec.getString("id")));
         this.description = filec.getString("description");
         this.createTime = Constants.DateFormat.parse(filec.getString("time"));
         this.playerUUID = UUID.fromString(Objects.requireNonNull(filec.getString("player")));

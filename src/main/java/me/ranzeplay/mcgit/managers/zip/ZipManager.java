@@ -12,7 +12,7 @@ import java.util.Objects;
 
 public class ZipManager {
     public static void zipWorld(String worldName, String backupId) throws Exception {
-        File destinationDirectory = new File(Constants.BackupsDirectory.getAbsolutePath() + "/" + backupId);
+        File destinationDirectory = new File(Constants.ArchivesDirectory.getAbsolutePath() + "/" + backupId);
         // System.out.println("Destination: " + destinationDirectory.getAbsolutePath());
         if (!destinationDirectory.exists()) destinationDirectory.mkdirs();
 
@@ -46,7 +46,7 @@ public class ZipManager {
         // Delete world directory recursively
         deleteDirectory(serverRootDirectory.getAbsolutePath() + "/" + worldName);
 
-        UnzipFiles.UnzipToDirectory(new File(Constants.BackupsDirectory.getAbsolutePath() + "/" + backupId + "/" + (backupId + "-" + worldName + ".zip")), new File(serverRootDirectory.getAbsolutePath()));
+        UnzipFiles.UnzipToDirectory(new File(Constants.ArchivesDirectory.getAbsolutePath() + "/" + backupId + "/" + (backupId + "-" + worldName + ".zip")), new File(serverRootDirectory.getAbsolutePath()));
     }
 
     public static void deleteDirectory(String path) {

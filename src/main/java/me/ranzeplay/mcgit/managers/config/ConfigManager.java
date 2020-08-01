@@ -7,12 +7,12 @@ import java.io.File;
 import java.io.IOException;
 
 public class ConfigManager {
-    public static void CreateConfigurations() throws IOException {
-        if (!Constants.ConfigDirectory.exists()) Constants.ConfigDirectory.mkdirs();
+    public static void CreateProfile() throws IOException {
+        if (!Constants.ProfileDirectory.exists()) Constants.ProfileDirectory.mkdirs();
 
-        File commitsFile = Constants.CommitsDirectory;
-        if(!commitsFile.exists()) {
-            Main.Instance.getServer().getLogger().warning("Commits configuration file is not found. Creating...");
+        File commitsFile = Constants.ArchivesProfileDirectory;
+        if (!commitsFile.exists()) {
+            Main.Instance.getServer().getLogger().warning("Archives configuration file is not found. Creating...");
             commitsFile.createNewFile();
         }
     }
